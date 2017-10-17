@@ -4,7 +4,7 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    uhvpump0(new BinaryProtocol(0))
+    uhvpump0(new WindowProtocol(0))
 {
     ui->setupUi(this);
 
@@ -34,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
         {
             UHVWorkerVarSet::PrioritizedCommandMessage hvOnMsg;
             hvOnMsg.first = ui->spinBoxHVonoff->value();
-            hvOnMsg.second = UHVWorkerVarSet::CommandMessage(uhvpump0->HdrCmd().HVSwitch().Ch1().On().GenMsg(),QStringLiteral(""));
+            hvOnMsg.second = UHVWorkerVarSet::CommandMessage(uhvpump0->HVOnOffCh2().Write().setON().genMSG(),QStringLiteral(""));
             for (quint8 index=0; index<=ui->spinBoxHVonoff_2->value(); ++index)
             {
                 emit Out(QVariant::fromValue(UHVWorkerVarSet::addAnUHVPrioritizedCommandMessage),
@@ -45,7 +45,7 @@ MainWindow::MainWindow(QWidget *parent) :
         {
             UHVWorkerVarSet::PrioritizedCommandMessage hvOffMsg;
             hvOffMsg.first = ui->spinBoxHVonoff->value();
-            hvOffMsg.second = UHVWorkerVarSet::CommandMessage(uhvpump0->HdrCmd().HVSwitch().Ch1().Off().GenMsg(),QStringLiteral(""));
+            hvOffMsg.second = UHVWorkerVarSet::CommandMessage(uhvpump0->HVOnOffCh2().Write().setOFF().genMSG(),QStringLiteral(""));
             for (quint8 index=0; index<=ui->spinBoxHVonoff_2->value(); ++index)
             {
                 emit Out(QVariant::fromValue(UHVWorkerVarSet::addAnUHVPrioritizedCommandMessage),
@@ -58,7 +58,7 @@ MainWindow::MainWindow(QWidget *parent) :
             this, [&](){
         UHVWorkerVarSet::PrioritizedCommandMessage readIstatusMsg;
         readIstatusMsg.first = ui->spinBoxReadI->value();
-        readIstatusMsg.second = UHVWorkerVarSet::CommandMessage(uhvpump0->HdrCmd().ReadI().Ch1().GenMsg(),QStringLiteral(""));
+        readIstatusMsg.second = UHVWorkerVarSet::CommandMessage(uhvpump0->IMeasuredCh2().Read().clearDATA().genMSG(),QStringLiteral(""));
         for (quint8 index=0; index<=ui->spinBoxReadI_2->value(); ++index)
         {
             emit Out(QVariant::fromValue(UHVWorkerVarSet::addAnUHVPrioritizedCommandMessage),
@@ -70,7 +70,7 @@ MainWindow::MainWindow(QWidget *parent) :
             this, [&](){
         UHVWorkerVarSet::PrioritizedCommandMessage ReadVstatusMsg;
         ReadVstatusMsg.first = ui->spinBoxReadV->value();
-        ReadVstatusMsg.second = UHVWorkerVarSet::CommandMessage(uhvpump0->HdrCmd().ReadV().Ch1().GenMsg(),QStringLiteral(""));
+        ReadVstatusMsg.second = UHVWorkerVarSet::CommandMessage(uhvpump0->VMeasuredCh2().Read().clearDATA().genMSG(),QStringLiteral(""));
         for (quint8 index=0; index<=ui->spinBoxReadV_2->value(); ++index)
         {
             emit Out(QVariant::fromValue(UHVWorkerVarSet::addAnUHVPrioritizedCommandMessage),
@@ -82,7 +82,7 @@ MainWindow::MainWindow(QWidget *parent) :
             this, [&](){
         UHVWorkerVarSet::PrioritizedCommandMessage ReadPstatusMsg;
         ReadPstatusMsg.first = ui->spinBoxReadP->value();
-        ReadPstatusMsg.second = UHVWorkerVarSet::CommandMessage(uhvpump0->HdrCmd().ReadP().Ch1().GenMsg(),QStringLiteral(""));
+        ReadPstatusMsg.second = UHVWorkerVarSet::CommandMessage(uhvpump0->PMeasuredCh2().Read().clearDATA().genMSG(),QStringLiteral(""));
         for (quint8 index=0; index<=ui->spinBoxReadP_2->value(); ++index)
         {
             emit Out(QVariant::fromValue(UHVWorkerVarSet::addAnUHVPrioritizedCommandMessage),
@@ -133,33 +133,59 @@ void MainWindow::In(QVariant enumVar, QVariant dataVar)
             QByteArray coreRepMsg = newRepMsg.second.first;
             if (coreRepMsg.size() > 7)
             {
-                BinaryProtocol & tmpUHV2 = BinaryProtocol::fromQByteArray(coreRepMsg);
-                if (tmpUHV2.GetMessageDirection() == "From")
+                WindowProtocol & tmpUHV = WindowProtocol::fromQByteArray(coreRepMsg);
+                if (tmpUHV.getCOM()==0x30)//RD
                 {
-                    anInfo("Read: " << tmpUHV2.GetMessageTranslation());
+                    if (tmpUHV.getDATA().size()==0)
+                    {
+                        tmpUHV.setCMDFlag(true);
+                    }
+                    else
+                    {
+                        tmpUHV.setCMDFlag(false);
+                    }
+                }
+                else if (tmpUHV.getCOM()==0x31)//WR
+                {
+                    tmpUHV.setCMDFlag(true);
+                }
+                else
+                {
+                    tmpUHV.setCMDFlag(false);
+                }
+                if (!tmpUHV.isCMDFlagSet())
+                {
+                    anInfo("Read: " << tmpUHV.getMSGMean());
                     updateSENDlabel("",ui->labelSentMsg->text(),ui->labelSentMessage->text());
-                    updateREADlabel("QLabel { background-color : green; color : yellow; }",tmpUHV2.GetMsg().toHex(),tmpUHV2.GetMessageTranslation());
+                    updateREADlabel("QLabel { background-color : green; color : yellow; }",tmpUHV.getMSG().toHex(),tmpUHV.getMSGMean());
                     if (ui->labelSentMessage->text().contains("Off", Qt::CaseInsensitive)
-                            && ui->labelSentMessage->text().contains("HVSwitch", Qt::CaseInsensitive))
+                            && ui->labelSentMessage->text().contains("HVOnOff", Qt::CaseInsensitive))
                         ui->pushButtonHVonoff->setText("HV ON");
+                }
+                else
+                {
+                    anInfo("Sent: " << tmpUHV.getMSGMean());
+                    updateREADlabel("",ui->labelReadMsg->text(),ui->labelReadMessage->text());
+                    updateSENDlabel("QLabel { background-color : green; color : yellow; }",tmpUHV.getMSG().toHex(),tmpUHV.getMSGMean());
                 }
             }
             else
             {
+                WindowProtocol & tmpUHV = WindowProtocol::fromQByteArray(coreRepMsg);
+                QString tmpMsgMean = tmpUHV.getMSGMean();
                 anInfo("Read: " << coreRepMsg.toHex());
                 updateSENDlabel("",ui->labelSentMsg->text(),ui->labelSentMessage->text());
-                updateREADlabel("QLabel { background-color : green; color : yellow; }",coreRepMsg.toHex(),"");
-                if ((QString(coreRepMsg.toHex()) == "06") && ui->labelSentMessage->text().contains("HVSwitch", Qt::CaseInsensitive))
+                updateREADlabel("QLabel { background-color : green; color : yellow; }",coreRepMsg.toHex(),tmpMsgMean);
+                if ((tmpMsgMean.contains("ACK", Qt::CaseInsensitive)) && ui->labelSentMessage->text().contains("HVOnOff", Qt::CaseInsensitive))
                 {
-                    if (ui->labelSentMessage->text().contains("On", Qt::CaseInsensitive))
+                    if (ui->labelSentMessage->text().contains(" On", Qt::CaseInsensitive))
                     {
                         ui->pushButtonHVonoff->setText("HV OFF");
                     }
-                    else if (ui->labelSentMessage->text().contains("Off", Qt::CaseInsensitive))
+                    else if (ui->labelSentMessage->text().contains(" Off", Qt::CaseInsensitive))
                     {
                         ui->pushButtonHVonoff->setText("HV ON");
                     }
-                    ui->labelReadMessage->setText("Acknowledged");
                 }
             }
         break;
@@ -221,13 +247,9 @@ void MainWindow::In(QVariant enumVar, QVariant dataVar)
             anInfo("MessageTransmitted");
             UHVWorkerVarSet::PrioritizedCommandMessage newRepMsg
                     = dataVar.value<UHVWorkerVarSet::PrioritizedCommandMessage>();
-            BinaryProtocol & tmpUHV2 = BinaryProtocol::fromQByteArray(newRepMsg.second.first);
-            if (tmpUHV2.GetMessageDirection() == "To")
-            {
-                anInfo("Sent: " << tmpUHV2.GetMessageTranslation());
-                updateREADlabel("",ui->labelReadMsg->text(),ui->labelReadMessage->text());
-                updateSENDlabel("QLabel { background-color : green; color : yellow; }",tmpUHV2.GetMsg().toHex(),tmpUHV2.GetMessageTranslation());
-            }
+            WindowProtocol & tmpUHV = WindowProtocol::fromQByteArray(newRepMsg.second.first);
+            updateREADlabel("",ui->labelReadMsg->text(),ui->labelReadMessage->text());
+            updateSENDlabel("QLabel { background-color : green; color : yellow; }",tmpUHV.getMSG().toHex(),tmpUHV.getMSGMean());
             break;
         }
         case UHVWorkerVarSet::pendingMessageListCleared:

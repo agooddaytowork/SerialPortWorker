@@ -1,14 +1,13 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2017-09-10T21:27:31
+# Project created by QtCreator 2017-08-22T07:33:15
 #
 #-------------------------------------------------
+QT       += core gui
 
-QT       += core gui serialport
-
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets serialport
 CONFIG += -std=c++11 console
-TARGET = BinaryProtocolTester
+TARGET = WindowProtocolTester
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
@@ -26,7 +25,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    binaryprotocol.cpp \
+    windowprotocol.cpp \
     UHVWorker/errorannouncement.cpp \
     UHVWorker/messagereceiveandemitout.cpp \
     UHVWorker/serialportconnectionestablishment.cpp \
@@ -40,8 +39,8 @@ SOURCES += \
 HEADERS += \
         mainwindow.h \
     anlogger.h \
-    binaryprotocol.h \
     commonthings.h \
+    windowprotocol.h \
     UHVWorker/errorannouncement.h \
     UHVWorker/messagereceiveandemitout.h \
     UHVWorker/serialportconnectionestablishment.h \

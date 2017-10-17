@@ -30,7 +30,7 @@
 #include <string>
 #include <iostream>
 #include <sstream>
-#include <pthread.h>
+#include <thread>
 #include <chrono>
 #include <time.h>
 #include <vector>
@@ -154,7 +154,7 @@ static char anStdErrBuffer[BUFSIZ];
     }
 
     #define anSetConsoleTextAttribute(TxtAttrib) \
-        fprintf(stderr, u8"%s", anSetConsoleTextAttributePrefixString(TxtAttrib).c_str())
+        fprintf(stderr, anSetConsoleTextAttributePrefixString(TxtAttrib).c_str())
 
     #define __anFilePathSlashChar__ u'/'
 
@@ -165,7 +165,12 @@ static char anStdErrBuffer[BUFSIZ];
         || _anLinePositionEnabled || _anTimePositionEnabled)
 
     #if _anThreadIdPositionEnabled
-        #define __anPThreadId__ static_cast<unsigned long int>(pthread_self())
+        inline static long long anGetCurrentStdThreadId(const std::thread::id &currentThreadId) {
+            std::stringstream tmp;
+            tmp << currentThreadId;
+            return std::stoll(tmp.str());
+        }
+        #define __anStdThreadId__ anGetCurrentStdThreadId(std::this_thread::get_id())
     #endif
 
     #if _anFilePositionEnabled
@@ -194,9 +199,9 @@ static char anStdErrBuffer[BUFSIZ];
             #if _anThreadIdPositionEnabled
                 #if _anFunctionPositionEnabled || _anFilePositionEnabled\
                     || _anLinePositionEnabled
-                    const unsigned long int &currentThreadId,
+                    const long long &currentThreadId,
                 #else
-                    const unsigned long int &currentThreadId
+                    const long long &currentThreadId
                 #endif
             #endif
             #if _anFunctionPositionEnabled
@@ -256,9 +261,9 @@ static char anStdErrBuffer[BUFSIZ];
 
     #if _anThreadIdPositionEnabled
         #if _anFunctionPositionEnabled || _anFilePositionEnabled || _anLinePositionEnabled
-            #define anTmpThreadIdParamForMsgPathMacro __anPThreadId__,
+            #define anTmpThreadIdParamForMsgPathMacro __anStdThreadId__,
         #else
-            #define anTmpThreadIdParamForMsgPathMacro __anPThreadId__
+            #define anTmpThreadIdParamForMsgPathMacro __anStdThreadId__
         #endif
     #else
         #define anTmpThreadIdParamForMsgPathMacro
@@ -333,7 +338,7 @@ static char anStdErrBuffer[BUFSIZ];
     #define anTmpOutputMsgStrVarDeclaration\
         std::string anTmpOutputMsgStrVar
     #define anTmpOutputMsgStrVarToStdErr\
-        fprintf(stderr, u8"%s", anTmpOutputMsgStrVar.c_str())
+        fprintf(stderr, anTmpOutputMsgStrVar.c_str())
 #endif
 
 #if defined __anWINOS__ && _anLoggerSafeModeForWindowsEnabled
@@ -388,13 +393,13 @@ inline static void anTmpNoLineMessageLogger(
             #endif
         #endif
     #else
-        fprintf(stderr, u8"%s", aNoLineMessage.c_str());
+        fprintf(stderr, aNoLineMessage.c_str());
         std::cerr.flush();
         #ifdef anTmpCurrentMessagePathStrVar
             #ifdef anTmpPrevTxtAtribVar
                 anSetConsoleTextAttribute(_anMessagePathTextAttribute);
             #endif
-            fprintf(stderr, u8"%s", msgPath.c_str());
+            fprintf(stderr, msgPath.c_str());
             std::cerr.flush();
             #ifdef anTmpPrevTxtAtribVar
                 anSetConsoleTextAttribute(prePathAttrib);
