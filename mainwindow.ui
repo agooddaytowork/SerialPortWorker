@@ -37,151 +37,6 @@
      <string>Connect</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButtonHVonoff">
-    <property name="geometry">
-     <rect>
-      <x>280</x>
-      <y>60</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>HV ON</string>
-    </property>
-   </widget>
-   <widget class="QSpinBox" name="spinBoxHVonoff">
-    <property name="geometry">
-     <rect>
-      <x>380</x>
-      <y>60</y>
-      <width>42</width>
-      <height>22</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButtonReadV">
-    <property name="geometry">
-     <rect>
-      <x>280</x>
-      <y>100</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>ReadV</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButtonReadI">
-    <property name="geometry">
-     <rect>
-      <x>280</x>
-      <y>140</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>ReadI</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButtonReadP">
-    <property name="geometry">
-     <rect>
-      <x>280</x>
-      <y>180</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>ReadP</string>
-    </property>
-   </widget>
-   <widget class="QSpinBox" name="spinBoxReadV">
-    <property name="geometry">
-     <rect>
-      <x>380</x>
-      <y>100</y>
-      <width>42</width>
-      <height>22</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QSpinBox" name="spinBoxReadI">
-    <property name="geometry">
-     <rect>
-      <x>380</x>
-      <y>140</y>
-      <width>42</width>
-      <height>22</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QSpinBox" name="spinBoxReadP">
-    <property name="geometry">
-     <rect>
-      <x>380</x>
-      <y>180</y>
-      <width>42</width>
-      <height>22</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>290</x>
-      <y>20</y>
-      <width>291</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>COMMAND             PRIORITY         ECHOES</string>
-    </property>
-   </widget>
-   <widget class="QSpinBox" name="spinBoxHVonoff_2">
-    <property name="geometry">
-     <rect>
-      <x>460</x>
-      <y>60</y>
-      <width>42</width>
-      <height>22</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QSpinBox" name="spinBoxReadI_2">
-    <property name="geometry">
-     <rect>
-      <x>460</x>
-      <y>140</y>
-      <width>42</width>
-      <height>22</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QSpinBox" name="spinBoxReadV_2">
-    <property name="geometry">
-     <rect>
-      <x>460</x>
-      <y>100</y>
-      <width>42</width>
-      <height>22</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QSpinBox" name="spinBoxReadP_2">
-    <property name="geometry">
-     <rect>
-      <x>460</x>
-      <y>180</y>
-      <width>42</width>
-      <height>22</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QLabel" name="labelSEND">
     <property name="geometry">
      <rect>
@@ -275,23 +130,23 @@
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>120</x>
-      <y>150</y>
-      <width>75</width>
-      <height>23</height>
+      <x>50</x>
+      <y>170</y>
+      <width>121</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>CustomTest</string>
+     <string>Send A Random</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButtonClearBuffer">
     <property name="geometry">
      <rect>
-      <x>120</x>
-      <y>110</y>
-      <width>75</width>
-      <height>23</height>
+      <x>50</x>
+      <y>120</y>
+      <width>121</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">

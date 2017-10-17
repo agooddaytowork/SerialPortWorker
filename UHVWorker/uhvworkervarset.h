@@ -77,6 +77,7 @@ public:
     void deleteSerialPort();
     void setError(const Error & anErrorType, const QString & anErrorInfo);
     void clearError();
+    void addOneUHVPrioritizedCommandMessage(const UHVWorkerVarSet::PrioritizedCommandMessage &newCmdMsg);
 
     static const QMetaEnum DataMetaEnum;
     static const QMetaEnum ErrorMetaEnum;

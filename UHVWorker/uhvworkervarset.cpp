@@ -66,6 +66,25 @@ void UHVWorkerVarSet::clearError()
     ErrorInfo.clear();
 }
 
+void UHVWorkerVarSet::addOneUHVPrioritizedCommandMessage(const UHVWorkerVarSet::PrioritizedCommandMessage &newCmdMsg)
+{
+    if (pendingMessageList.contains(newCmdMsg.first))
+    {
+        pendingMessageList.value(newCmdMsg.first)->append(newCmdMsg.second);
+    }
+    else
+    {
+        pendingMessageList.insert(newCmdMsg.first, new QList<UHVWorkerVarSet::CommandMessage>({newCmdMsg.second}));
+    }
+    if (pendingMessageList.size() == 1)
+    {
+        if (pendingMessageList.first()->size() == 1)
+        {
+            emit AFirstPrioritizedCommandMessageReceived();
+        }
+    }
+}
+
 void UHVWorkerVarSet::SerialPortErrorOccurred(QSerialPort::SerialPortError error)
 {
     if ((error!=QSerialPort::NoError) && (error!=QSerialPort::TimeoutError))

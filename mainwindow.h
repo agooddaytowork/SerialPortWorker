@@ -7,7 +7,6 @@
 #include <QSerialPort>
 #include <QSerialPortInfo>
 #include "UHVWorker/uhvworker.h"
-#include "windowprotocol.h"
 
 namespace Ui {
 class MainWindow;
@@ -24,9 +23,10 @@ signals:
     void Out(QVariant, QVariant = QVariant());
 private slots:
     void In(QVariant enumVar, QVariant dataVar = QVariant());
+    void on_pushButton_clicked();
+
 private:
     Ui::MainWindow *ui;
-    WindowProtocol * uhvpump0;
     void updateSENDlabel(const QString &SENDstyleSheet = "",
                          const QString &SentMsgStr = "",
                          const QString &SentMessageStr = "");

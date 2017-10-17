@@ -80,22 +80,7 @@ void UHVWorker::In(QVariant enumVar, QVariant dataVar)
         case UHVWorkerVarSet::addAnUHVPrioritizedCommandMessage:
         {
             anIf(UHVWorkerDbgEn, anInfo("addAnUHVPrioritizedCommandMessage"));
-            UHVWorkerVarSet::PrioritizedCommandMessage newCmdMsg = dataVar.value<UHVWorkerVarSet::PrioritizedCommandMessage>();
-            if (WorkingVarSet->pendingMessageList.contains(newCmdMsg.first))
-            {
-                WorkingVarSet->pendingMessageList.value(newCmdMsg.first)->append(newCmdMsg.second);
-            }
-            else
-            {
-                WorkingVarSet->pendingMessageList.insert(newCmdMsg.first, new QList<UHVWorkerVarSet::CommandMessage>({newCmdMsg.second}));
-            }
-            if (WorkingVarSet->pendingMessageList.size() == 1)
-            {
-                if (WorkingVarSet->pendingMessageList.first()->size() == 1)
-                {
-                    emit WorkingVarSet->AFirstPrioritizedCommandMessageReceived();
-                }
-            }
+            WorkingVarSet->addOneUHVPrioritizedCommandMessage(dataVar.value<UHVWorkerVarSet::PrioritizedCommandMessage>());
             break;
         }
         case UHVWorkerVarSet::disconnectSerialPort:

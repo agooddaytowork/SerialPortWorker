@@ -7,7 +7,6 @@
 #include <QSignalTransition>
 #include "uhvworkervarset.h"
 #include "anlogger.h"
-#include "commonthings.h"
 #include "serialportinforequest.h"
 #include "serialportinfovalidation.h"
 #include "serialportconnectionestablishment.h"

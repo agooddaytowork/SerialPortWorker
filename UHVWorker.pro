@@ -1,13 +1,14 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2017-08-22T07:33:15
+# Project created by QtCreator 2017-09-10T22:54:03
 #
 #-------------------------------------------------
-QT       += core gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets serialport
+QT       += core gui serialport
+
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 CONFIG += -std=c++11 console
-TARGET = WindowProtocolTester
+TARGET = UHVWorkerExec
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
@@ -25,7 +26,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    windowprotocol.cpp \
     UHVWorker/errorannouncement.cpp \
     UHVWorker/messagereceiveandemitout.cpp \
     UHVWorker/serialportconnectionestablishment.cpp \
@@ -39,8 +39,6 @@ SOURCES += \
 HEADERS += \
         mainwindow.h \
     anlogger.h \
-    commonthings.h \
-    windowprotocol.h \
     UHVWorker/errorannouncement.h \
     UHVWorker/messagereceiveandemitout.h \
     UHVWorker/serialportconnectionestablishment.h \
