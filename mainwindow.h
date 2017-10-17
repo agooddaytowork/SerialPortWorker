@@ -2,11 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QVariant>
 #include <QThread>
-#include <QSerialPort>
-#include <QSerialPortInfo>
-#include "UHVWorker/uhvworker.h"
+#include "SerialPortWorker/serialportworker.h"
+#include "binaryprotocol.h"
 
 namespace Ui {
 class MainWindow;
@@ -20,13 +18,13 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 signals:
-    void Out(QVariant, QVariant = QVariant());
+    void Out(const GlobalSignal &);
 private slots:
-    void In(QVariant enumVar, QVariant dataVar = QVariant());
-    void on_pushButton_clicked();
+    void In(const GlobalSignal &aGlobalSignal);
 
 private:
     Ui::MainWindow *ui;
+    BinaryProtocol * uhv2pump0;
     void updateSENDlabel(const QString &SENDstyleSheet = "",
                          const QString &SentMsgStr = "",
                          const QString &SentMessageStr = "");

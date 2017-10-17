@@ -1,36 +1,36 @@
-#ifndef UHVWORKERVARSET_H
-#define UHVWORKERVARSET_H
+#ifndef SERIALPORTWORKERPROPERTY_H
+#define SERIALPORTWORKERPROPERTY_H
 
-#define UHVWorkerVarSetDbgEn 1
+#define SerialPortWorkerPropertyDbgEn 1
 
 #include <QCoreApplication>
+#include <QStateMachine>
 #include <QObject>
 #include <QPair>
-#include <QThread>
 #include <QMap>
 #include <QSerialPort>
 #include <QSerialPortInfo>
-#include <QStateMachine>
 #include <QMetaType>
+#include <QMetaEnum>
 #include "anlogger.h"
+#include "commonthings.h"
 
-class UHVWorkerVarSet: public QObject
+class SerialPortWorkerProperty : public QObject
 {
     Q_OBJECT
 public:
-    explicit UHVWorkerVarSet(QObject * parent = Q_NULLPTR);
-    ~UHVWorkerVarSet();
-
+    explicit SerialPortWorkerProperty(QObject *parent = nullptr);
+    ~SerialPortWorkerProperty();
     enum Data
     {
         NoData = 0,
         requestPortName,
         replyPortName,
-        clearPendingMessageList,
+        clearBuffer,
         disconnectSerialPort,
         restartSerialPort,
-        addAnUHVPrioritizedCommandMessage,
-        replyUHVPrioritizedCommandMessage
+        addAGlobalSignal,
+        replyAGlobalSignal
     };
     Q_ENUM(Data)
 
@@ -54,20 +54,17 @@ public:
         NoNotification = 0,
         SerialPortDisconnected,
         SerialPortConnected,
-        pendingMessageListCleared,
-        MessageTransmitted
+        BufferCleared,
+        BytesWritten
     };
     Q_ENUM(Notification)
 
-    typedef QPair<QByteArray,QString> CommandMessage;
-    typedef QPair<qint8,CommandMessage> PrioritizedCommandMessage;
+    typedef QPair<QByteArray,QString> DataMessage;
 
     QString PortName;
     QSerialPort * SerialPort = Q_NULLPTR;
-    QMap<qint8,QList<CommandMessage>*> pendingMessageList;
-    qint8 lastTransmittedMessagePriority=0;
-    CommandMessage lastTransmittedMessage;
-    CommandMessage lastReceivedMessage;
+    QMap<qint16,QList<GlobalSignal>> prioritizedBuffer;
+    GlobalSignal currentGlobalSignal;
     Error ErrorType = NoError;
     QString ErrorInfo;
 
@@ -77,7 +74,9 @@ public:
     void deleteSerialPort();
     void setError(const Error & anErrorType, const QString & anErrorInfo);
     void clearError();
-    void addOneUHVPrioritizedCommandMessage(const UHVWorkerVarSet::PrioritizedCommandMessage &newCmdMsg);
+    void clearEmptyList();
+    void clearPrioritizedBuffer();
+    void addOneGlobalSignal(const GlobalSignal &aGlobalSignal);
 
     static const QMetaEnum DataMetaEnum;
     static const QMetaEnum ErrorMetaEnum;
@@ -86,16 +85,17 @@ public:
     static const QMetaEnum QSerialPortErrorMetaEnum;
     static const Qt::ConnectionType uniqueQtConnectionType = static_cast<Qt::ConnectionType>(Qt::AutoConnection | Qt::UniqueConnection);
 
-public slots:
-    void SerialPortErrorOccurred(QSerialPort::SerialPortError error);
 signals:
-    void DirectStateTransitionRequest(const QString &);
+    void requestDirectTransitionForSerialPortWorkerState(const QString &);
     void ErrorOccurred();
     void PortNameChanged();
     void restartSerialPortConnection();
-    void AFirstPrioritizedCommandMessageReceived();
-    void Out(QVariant , QVariant = QVariant());
+    void firstGlobalSignalAdded();
+    void oneGlobalSignalAdded();
+    void Out(const GlobalSignal &);
+public slots:
+    void SerialPortErrorOccurred(QSerialPort::SerialPortError error);
 };
+Q_DECLARE_METATYPE(SerialPortWorkerProperty::DataMessage)
 Q_DECLARE_METATYPE(QSerialPort::SerialPortError)
-Q_DECLARE_METATYPE(UHVWorkerVarSet::PrioritizedCommandMessage)
-#endif // UHVWORKERVARSET_H
+#endif // SERIALPORTWORKERPROPERTY_H

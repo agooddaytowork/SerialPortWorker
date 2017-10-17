@@ -1,6 +1,6 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2017-09-10T22:54:03
+# Project created by QtCreator 2017-09-18T11:28:53
 #
 #-------------------------------------------------
 
@@ -8,7 +8,7 @@ QT       += core gui serialport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 CONFIG += -std=c++11 console
-TARGET = UHVWorkerExec
+TARGET = execSerialPortWorker
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
@@ -26,28 +26,31 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    UHVWorker/errorannouncement.cpp \
-    UHVWorker/messagereceiveandemitout.cpp \
-    UHVWorker/serialportconnectionestablishment.cpp \
-    UHVWorker/serialportinforequest.cpp \
-    UHVWorker/serialportinfovalidation.cpp \
-    UHVWorker/solitarymessagetransmission.cpp \
-    UHVWorker/uhvworker.cpp \
-    UHVWorker/uhvworkerdirectstatetransition.cpp \
-    UHVWorker/uhvworkervarset.cpp
+    SerialPortWorker/serialportworker.cpp \
+    SerialPortWorker/serialportworkerproperty.cpp \
+    SerialPortWorker/requestserialportinfo.cpp \
+    SerialPortWorker/validateserialportinfo.cpp \
+    SerialPortWorker/connectserialport.cpp \
+    SerialPortWorker/writebytes.cpp \
+    SerialPortWorker/readbytes.cpp \
+    SerialPortWorker/wait4errorhandler.cpp \
+    SerialPortWorker/directtransition4serialportworkerstate.cpp \
+    binaryprotocol.cpp
 
 HEADERS += \
         mainwindow.h \
     anlogger.h \
-    UHVWorker/errorannouncement.h \
-    UHVWorker/messagereceiveandemitout.h \
-    UHVWorker/serialportconnectionestablishment.h \
-    UHVWorker/serialportinforequest.h \
-    UHVWorker/serialportinfovalidation.h \
-    UHVWorker/solitarymessagetransmission.h \
-    UHVWorker/uhvworker.h \
-    UHVWorker/uhvworkerdirectstatetransition.h \
-    UHVWorker/uhvworkervarset.h
+    commonthings.h \
+    SerialPortWorker/serialportworker.h \
+    SerialPortWorker/serialportworkerproperty.h \
+    SerialPortWorker/requestserialportinfo.h \
+    SerialPortWorker/validateserialportinfo.h \
+    SerialPortWorker/connectserialport.h \
+    SerialPortWorker/writebytes.h \
+    SerialPortWorker/readbytes.h \
+    SerialPortWorker/wait4errorhandler.h \
+    SerialPortWorker/directtransition4serialportworkerstate.h \
+    binaryprotocol.h
 
 FORMS += \
         mainwindow.ui
