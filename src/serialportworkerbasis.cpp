@@ -122,14 +122,14 @@ void SerialPortWorkerBasis::executePrioritizedBuffer()
                     anIf(SerialPortWorkerBasisDbgEn, anAck("Bytes Written !"));
                     currentGlobalSignal.Type = QVariant::fromValue(BytesWritten);
                     emit readingBytesSerialPortWorker();
-                    emit Out(currentGlobalSignal);
+                    emit Out(GlobalSignal(currentGlobalSignal));
                     return;
                 }
                 else
                 {
                     anIf(SerialPortWorkerBasisDbgEn, anWarn("Bytes Written Timed Out !"));
                     currentGlobalSignal.Type = QVariant::fromValue(BytesWrittenTimedOut);
-                    emit Out(currentGlobalSignal);
+                    emit Out(GlobalSignal(currentGlobalSignal));
                 }
                 break;
             }
@@ -152,12 +152,12 @@ void SerialPortWorkerBasis::executePrioritizedBuffer()
         else if (currentGlobalSignalTypeTypeName == QStringLiteral("SerialPortWorkerBasis::Warning"))
         {
             anIf(SerialPortWorkerBasisDbgEn,anAck(WarningMetaEnum.valueToKey(static_cast<int>(currentGlobalSignal.Type.toInt()))));
-            emit Out(currentGlobalSignal);
+            emit Out(GlobalSignal(currentGlobalSignal));
         }
         else if (currentGlobalSignalTypeTypeName == QStringLiteral("SerialPortWorkerBasis::Notification"))
         {
             anIf(SerialPortWorkerBasisDbgEn,anAck(NotificationMetaEnum.valueToKey(static_cast<int>(currentGlobalSignal.Type.toInt()))));
-            emit Out(currentGlobalSignal);
+            emit Out(GlobalSignal(currentGlobalSignal));
         }
     }
     isCurrentRunningCycleCompleted = true;
@@ -182,7 +182,7 @@ void SerialPortWorkerBasis::readAllDataFromSerialPort()
         anIf(SerialPortWorkerBasisDbgEn, anWarn("Ready Read Timed Out !"));
         currentGlobalSignal.Type = QVariant::fromValue(ReadyReadTimedOut);
     }
-    emit Out(currentGlobalSignal);
+    emit Out(GlobalSignal(currentGlobalSignal));
 }
 
 void SerialPortWorkerBasis::emitErrorGlobalSignal()
