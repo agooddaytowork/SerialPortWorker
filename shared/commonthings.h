@@ -4,6 +4,7 @@
 #include <QHash>
 #include <QByteArray>
 #include <QVariant>
+#include <limits>
 #include "anLogger/src/anlogger.h"
 
 inline QByteArray &operator <<(QByteArray &QBArr, const quint8 Data)
@@ -79,18 +80,30 @@ inline QByteArray IntStr2QBArr0Pad(const quint32 Num, const quint8 SizeInByte)
 ///
 ///\brief GlobalSignal
 ///
+///
+typedef qint16 TypeOfGlobalSignalContentPriority;
+typedef qint16 TypeOfGlobalSignalPriority;
+extern const TypeOfGlobalSignalContentPriority maxGlobalSignalContentPriority;
+extern const TypeOfGlobalSignalContentPriority minGlobalSignalContentPriority;
+extern const TypeOfGlobalSignalPriority maxGlobalSignalPriority;
+extern const TypeOfGlobalSignalPriority minGlobalSignalPriority;
 typedef struct
 {
     QVariant Type;
     QVariant Data;
+    QString TimeStamp;
     QString Key = QStringLiteral("NULL");
     QList<QString> DstStrs;
-    qint16 Priority = 0;
-    qint16 SignalPriority = 0;
+    TypeOfGlobalSignalContentPriority Priority = 0;
+    TypeOfGlobalSignalPriority SignalPriority = 0;
 } GlobalSignal;
 Q_DECLARE_METATYPE(GlobalSignal)
 
 #define registerGlobalSignal qRegisterMetaType<GlobalSignal>("GlobalSignal");
+
+extern const Qt::ConnectionType uniqueQtConnectionType;
+
+#define NOW2String QDateTime::currentDateTime().toString(Qt::ISODate);
 
 extern const QString piLocalDBWorkerObjName;
 extern const QString UHV2WorkerObjName;

@@ -3,26 +3,26 @@
 
 #define SerialPortWorkerDbgEn 1
 
-#include "serialportworkerproperty.h"
-#include "directtransition4serialportworkerstate.h"
-#include "requestserialportinfo.h"
-#include "validateserialportinfo.h"
-#include "connectserialport.h"
-#include "writebytes.h"
-#include "readbytes.h"
-#include "wait4errorhandler4serialportworker.h"
+#include <QStateMachine>
+#include "serialportworkerbasis.h"
+#include "shared/directtransition.h"
+#include "errorserialportworker.h"
+#include "idleserialportworker.h"
+#include "readbytesserialportworker.h"
+#include "runningserialportworker.h"
+#include "uninitiatedserialportworker.h"
 
 class SerialPortWorker : public QStateMachine
 {
     Q_OBJECT
 public:
-    SerialPortWorker();
+    explicit SerialPortWorker(QObject *parent = nullptr);
 signals:
     void Out(const GlobalSignal &);
 public slots:
     void In(const GlobalSignal &aGlobalSignal);
 private:
-    SerialPortWorkerProperty * currentProperty = Q_NULLPTR;
+    SerialPortWorkerBasis *currentBasis = nullptr;
 };
 
 #endif // SERIALPORTWORKER_H

@@ -1,6 +1,6 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2017-09-18T11:28:53
+# Project created by QtCreator 2017-10-13T13:24:08
 #
 #-------------------------------------------------
 
@@ -8,7 +8,7 @@ QT       += core gui serialport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 CONFIG += -std=c++11 console
-TARGET = execSerialPortWorker
+TARGET = SerialPortWorker
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
@@ -26,33 +26,35 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    anLogger/src/anlogger.cpp \
-    BinaryProtocol/src/binaryprotocol.cpp \
-    shared/commonthings.cpp \
-    src/connectserialport.cpp \
-    src/directtransition4serialportworkerstate.cpp \
-    src/readbytes.cpp \
-    src/requestserialportinfo.cpp \
-    src/serialportworker.cpp \
-    src/serialportworkerproperty.cpp \
-    src/validateserialportinfo.cpp \
-    src/wait4errorhandler4serialportworker.cpp \
-    src/writebytes.cpp
+        anLogger/src/anlogger.cpp \
+        BinaryProtocol/src/binaryprotocol.cpp \
+        WindowProtocol/src/windowprotocol.cpp \
+        shared/abstractstatemachinebasis.cpp \
+        shared/commonthings.cpp \
+        shared/directtransition.cpp \
+        src/serialportworker.cpp \
+    src/serialportworkerbasis.cpp \
+    src/uninitiatedserialportworker.cpp \
+    src/idleserialportworker.cpp \
+    src/runningserialportworker.cpp \
+    src/readbytesserialportworker.cpp \
+    src/errorserialportworker.cpp
 
 HEADERS += \
         mainwindow.h \
-    anLogger/src/anlogger.h \
-    BinaryProtocol/src/binaryprotocol.h \
-    shared/commonthings.h \
-    src/connectserialport.h \
-    src/directtransition4serialportworkerstate.h \
-    src/readbytes.h \
-    src/requestserialportinfo.h \
-    src/serialportworker.h \
-    src/serialportworkerproperty.h \
-    src/validateserialportinfo.h \
-    src/wait4errorhandler4serialportworker.h \
-    src/writebytes.h
+        anLogger/src/anlogger.h \
+        BinaryProtocol/src/binaryprotocol.h \
+        WindowProtocol/src/windowprotocol.h \
+        shared/abstractstatemachinebasis.h \
+        shared/commonthings.h \
+        shared/directtransition.h \
+        src/serialportworker.h \
+    src/serialportworkerbasis.h \
+    src/uninitiatedserialportworker.h \
+    src/idleserialportworker.h \
+    src/runningserialportworker.h \
+    src/readbytesserialportworker.h \
+    src/errorserialportworker.h
 
 FORMS += \
         mainwindow.ui
