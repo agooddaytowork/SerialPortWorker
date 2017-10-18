@@ -26,31 +26,33 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    SerialPortWorker/serialportworker.cpp \
-    SerialPortWorker/serialportworkerproperty.cpp \
-    SerialPortWorker/requestserialportinfo.cpp \
-    SerialPortWorker/validateserialportinfo.cpp \
-    SerialPortWorker/connectserialport.cpp \
-    SerialPortWorker/writebytes.cpp \
-    SerialPortWorker/readbytes.cpp \
-    SerialPortWorker/wait4errorhandler.cpp \
-    SerialPortWorker/directtransition4serialportworkerstate.cpp \
-    binaryprotocol.cpp
+    anLogger/src/anlogger.cpp \
+    BinaryProtocol/src/binaryprotocol.cpp \
+    shared/commonthings.cpp \
+    src/connectserialport.cpp \
+    src/directtransition4serialportworkerstate.cpp \
+    src/readbytes.cpp \
+    src/requestserialportinfo.cpp \
+    src/serialportworker.cpp \
+    src/serialportworkerproperty.cpp \
+    src/validateserialportinfo.cpp \
+    src/wait4errorhandler4serialportworker.cpp \
+    src/writebytes.cpp
 
 HEADERS += \
         mainwindow.h \
-    anlogger.h \
-    commonthings.h \
-    SerialPortWorker/serialportworker.h \
-    SerialPortWorker/serialportworkerproperty.h \
-    SerialPortWorker/requestserialportinfo.h \
-    SerialPortWorker/validateserialportinfo.h \
-    SerialPortWorker/connectserialport.h \
-    SerialPortWorker/writebytes.h \
-    SerialPortWorker/readbytes.h \
-    SerialPortWorker/wait4errorhandler.h \
-    SerialPortWorker/directtransition4serialportworkerstate.h \
-    binaryprotocol.h
+    anLogger/src/anlogger.h \
+    BinaryProtocol/src/binaryprotocol.h \
+    shared/commonthings.h \
+    src/connectserialport.h \
+    src/directtransition4serialportworkerstate.h \
+    src/readbytes.h \
+    src/requestserialportinfo.h \
+    src/serialportworker.h \
+    src/serialportworkerproperty.h \
+    src/validateserialportinfo.h \
+    src/wait4errorhandler4serialportworker.h \
+    src/writebytes.h
 
 FORMS += \
         mainwindow.ui

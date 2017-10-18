@@ -12,8 +12,8 @@
 #include <QSerialPortInfo>
 #include <QMetaType>
 #include <QMetaEnum>
-#include "anlogger.h"
-#include "commonthings.h"
+#include "anLogger/src/anlogger.h"
+#include "shared/commonthings.h"
 
 class SerialPortWorkerProperty : public QObject
 {
@@ -55,7 +55,8 @@ public:
         SerialPortDisconnected,
         SerialPortConnected,
         BufferCleared,
-        BytesWritten
+        BytesWritten,
+        readyToWork
     };
     Q_ENUM(Notification)
 

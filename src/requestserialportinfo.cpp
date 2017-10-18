@@ -8,12 +8,14 @@ requestSerialPortInfo::requestSerialPortInfo(SerialPortWorkerProperty *currentPr
     {
         timer.setParent(this);
         timer.setInterval(TimerIntervalInMSecs);
+        timer.setSingleShot(true);
         QObject::connect(&timer, &QTimer::timeout
                         , this
-                        , [currentProperty](){
+                        , [currentProperty,this](){
                                 anIf(SerialPortWorkerPropertyDbgEn, anInfo("Emit requestPortName"));
                                 GlobalSignal requestDataPortName;
                                 requestDataPortName.Type = QVariant::fromValue(SerialPortWorkerProperty::requestPortName);
+                                requestDataPortName.Data = QVariant::fromValue(this->machine()->objectName());
                                 emit currentProperty->Out(requestDataPortName);
                           }
                         , SerialPortWorkerProperty::uniqueQtConnectionType);

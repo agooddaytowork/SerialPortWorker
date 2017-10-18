@@ -10,7 +10,7 @@
 #include "connectserialport.h"
 #include "writebytes.h"
 #include "readbytes.h"
-#include "wait4errorhandler.h"
+#include "wait4errorhandler4serialportworker.h"
 
 class SerialPortWorker : public QStateMachine
 {

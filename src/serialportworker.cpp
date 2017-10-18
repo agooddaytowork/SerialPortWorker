@@ -17,8 +17,8 @@ SerialPortWorker::SerialPortWorker()
     state4->setObjectName("writeBytes");
     readBytes *state5 = new readBytes(currentProperty,300,main);
     state5->setObjectName("readBytes");
-    wait4ErrorHandler *state7 = new wait4ErrorHandler(currentProperty,3000);
-    state7->setObjectName("wait4ErrorHandler");
+    wait4ErrorHandler4SerialPortWorker *state7 = new wait4ErrorHandler4SerialPortWorker(currentProperty,3000);
+    state7->setObjectName("wait4ErrorHandler4SerialPortWorker");
 
     main->addTransition(currentProperty, &SerialPortWorkerProperty::PortNameChanged,state2);
     main->addTransition(currentProperty, &SerialPortWorkerProperty::ErrorOccurred,state7);

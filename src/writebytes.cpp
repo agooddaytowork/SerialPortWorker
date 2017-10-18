@@ -13,7 +13,7 @@ void writeBytes::onEntry(QEvent *)
     currentProperty->clearEmptyList();
     if (currentProperty->prioritizedBuffer.size())
     {
-        currentProperty->currentGlobalSignal = currentProperty->prioritizedBuffer.last().takeFirst();
+        currentProperty->currentGlobalSignal = currentProperty->prioritizedBuffer.last().first();
         currentProperty->SerialPort->write(currentProperty->currentGlobalSignal.Data.value<SerialPortWorkerProperty::DataMessage>().first);
         if (currentProperty->SerialPort->waitForBytesWritten(TimeOut4WriteInMilisecond))
         {
@@ -25,6 +25,7 @@ void writeBytes::onEntry(QEvent *)
             anIf(SerialPortWorkerPropertyDbgEn, anWarn("Bytes Written Timed Out !"));
             currentProperty->currentGlobalSignal.Type = QVariant::fromValue(SerialPortWorkerProperty::BytesWrittenTimedOut);
         }
+        currentProperty->prioritizedBuffer.last().removeFirst();
         emit currentProperty->Out(currentProperty->currentGlobalSignal);
         emit currentProperty->requestDirectTransitionForSerialPortWorkerState("readBytes");
     }

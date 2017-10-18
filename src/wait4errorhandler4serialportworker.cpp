@@ -1,13 +1,14 @@
-#include "wait4errorhandler.h"
+#include "wait4errorhandler4serialportworker.h"
 
-wait4ErrorHandler::wait4ErrorHandler(SerialPortWorkerProperty *instantProperty, quint32 TimerIntervalInMilisecond)
+wait4ErrorHandler4SerialPortWorker::wait4ErrorHandler4SerialPortWorker(SerialPortWorkerProperty *instantProperty, quint32 TimerIntervalInMilisecond)
     : currentProperty(instantProperty), TimerIntervalMSecs(TimerIntervalInMilisecond)
 {
-    anIf(SerialPortWorkerPropertyDbgEn, anTrk("wait4ErrorHandler Constructed"));
+    anIf(SerialPortWorkerPropertyDbgEn, anTrk("wait4ErrorHandler4SerialPortWorker Constructed"));
     if (TimerIntervalInMilisecond > 0)
     {
         timer.setParent(this);
         timer.setInterval(TimerIntervalInMilisecond);
+        timer.setSingleShot(true);
         QObject::connect(&timer, &QTimer::timeout
                         , this
                         , [instantProperty](){
@@ -26,16 +27,16 @@ wait4ErrorHandler::wait4ErrorHandler(SerialPortWorkerProperty *instantProperty, 
     }
 }
 
-void wait4ErrorHandler::onEntry(QEvent *)
+void wait4ErrorHandler4SerialPortWorker::onEntry(QEvent *)
 {
-    anIf(SerialPortWorkerPropertyDbgEn, anTrk("wait4ErrorHandler Entered"));
+    anIf(SerialPortWorkerPropertyDbgEn, anTrk("wait4ErrorHandler4SerialPortWorker Entered"));
     if (TimerIntervalMSecs > 0)
         timer.start();
 }
 
-void wait4ErrorHandler::onExit(QEvent *)
+void wait4ErrorHandler4SerialPortWorker::onExit(QEvent *)
 {
-    anIf(SerialPortWorkerPropertyDbgEn, anTrk("Leave wait4ErrorHandler"));
+    anIf(SerialPortWorkerPropertyDbgEn, anTrk("Leave wait4ErrorHandler4SerialPortWorker"));
     if (TimerIntervalMSecs > 0)
         timer.stop();
     currentProperty->clearError();

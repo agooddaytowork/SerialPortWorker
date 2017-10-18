@@ -3,8 +3,8 @@
 
 #include <QMainWindow>
 #include <QThread>
-#include "SerialPortWorker/serialportworker.h"
-#include "binaryprotocol.h"
+#include "src/serialportworker.h"
+#include "BinaryProtocol/src/binaryprotocol.h"
 
 namespace Ui {
 class MainWindow;
