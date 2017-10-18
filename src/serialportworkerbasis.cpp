@@ -121,22 +121,16 @@ void SerialPortWorkerBasis::executePrioritizedBuffer()
                 {
                     anIf(SerialPortWorkerBasisDbgEn, anAck("Bytes Written !"));
                     currentGlobalSignal.Type = QVariant::fromValue(BytesWritten);
-                    addAGlobalSignal(currentGlobalSignal);
                     emit readingBytesSerialPortWorker();
+                    emit Out(currentGlobalSignal);
                     return;
                 }
                 else
                 {
                     anIf(SerialPortWorkerBasisDbgEn, anWarn("Bytes Written Timed Out !"));
                     currentGlobalSignal.Type = QVariant::fromValue(BytesWrittenTimedOut);
-                    addAGlobalSignal(currentGlobalSignal);
+                    emit Out(currentGlobalSignal);
                 }
-                break;
-            }
-            case replyBytesWithTimeStamp:
-            {
-                anIf(SerialPortWorkerBasisDbgEn, anAck("replyBytesWithTimeStamp"));
-                emit Out(currentGlobalSignal);
                 break;
             }
             case clearBuffer:
@@ -188,7 +182,7 @@ void SerialPortWorkerBasis::readAllDataFromSerialPort()
         anIf(SerialPortWorkerBasisDbgEn, anWarn("Ready Read Timed Out !"));
         currentGlobalSignal.Type = QVariant::fromValue(ReadyReadTimedOut);
     }
-    addAGlobalSignal(currentGlobalSignal);
+    emit Out(currentGlobalSignal);
 }
 
 void SerialPortWorkerBasis::emitErrorGlobalSignal()
