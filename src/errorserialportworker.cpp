@@ -13,7 +13,7 @@ void errorSerialPortWorker::onEntry(QEvent *)
     anIf(SerialPortWorkerBasisDbgEn, anTrk("errorSerialPortWorker Entered"));
     basisptr->currentStateName = objectName();
     qApp->processEvents();
-    basisptr->emitErrorGlobalSignal();
+    basisptr->errorSerialPortWorkerOnEntry();
 }
 
 void errorSerialPortWorker::onExit(QEvent *)

@@ -13,9 +13,7 @@ void readBytesSerialPortWorker::onEntry(QEvent *)
     anIf(SerialPortWorkerBasisDbgEn, anTrk("readBytesSerialPortWorker Entered"));
     basisptr->currentStateName = objectName();
     qApp->processEvents();
-    basisptr->readAllDataFromSerialPort();
-    basisptr->isCurrentRunningCycleCompleted = true;
-    emit basisptr->goToState2();
+    basisptr->readBytesSerialPortWorkerOnEntry();
 }
 
 void readBytesSerialPortWorker::onExit(QEvent *)

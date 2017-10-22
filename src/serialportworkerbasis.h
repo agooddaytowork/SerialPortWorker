@@ -56,27 +56,30 @@ public:
     static const QMetaEnum NotificationMetaEnum;
     static const QMetaEnum QSerialPortErrorMetaEnum;
 
-    QString PortName;
-    QSerialPort SerialPort;
-    Error ErrorType = NoError;
-    QString ErrorInfo;
+    void uninitiatedSerialPortWorkerOnEntry();
+    void idleSerialPortWorkerOnEntry();
+    void runningSerialPortWorkerOnEntry();
+    void readBytesSerialPortWorkerOnEntry();
+    void errorSerialPortWorkerOnEntry();
 
-    void initialize(const QString &aPortName);
-    void dispose();
-    void setError(const Error & anErrorType, const QString & anErrorInfo);
     void clearError();
-    void setPortName(const QString &newPortName);
-    void emitRequestPortName();
-    void queueNotificationReadyToWork();
-    void executePrioritizedBuffer();
-    void readAllDataFromSerialPort();
-    void emitErrorGlobalSignal();
+
 signals:
     void readingBytesSerialPortWorker();
 public slots:
     void In(const GlobalSignal &aGlobalSignal);
     void SerialPortErrorOccurred(QSerialPort::SerialPortError error);
 private:
+    QString PortName;
+    QSerialPort SerialPort;
+    Error ErrorType = NoError;
+    QString ErrorInfo;
+
+    void initiate(const QString &aPortName);
+    void dispose();
+    void setError(const Error & anErrorType, const QString & anErrorInfo);
+    void setPortName(const QString &newPortName);
+    void readAllDataFromSerialPort();
     void configSerialPort();
     bool openSerialPort();
     void closeSerialPort();

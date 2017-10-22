@@ -13,18 +13,7 @@ void uninitiatedSerialPortWorker::onEntry(QEvent *)
     anIf(SerialPortWorkerBasisDbgEn,anTrk("uninitiatedSerialPortWorker Entered"));
     basisptr->currentStateName = objectName();
     qApp->processEvents();
-    if (!(basisptr->isInitiated))
-    {
-        if (basisptr->PortName.isEmpty())
-        {
-           basisptr->emitRequestPortName();
-        }
-        else
-        {
-            QString aPortName = basisptr->PortName;
-            basisptr->initialize(aPortName);
-        }
-    }
+    basisptr->uninitiatedSerialPortWorkerOnEntry();
 }
 
 void uninitiatedSerialPortWorker::onExit(QEvent *)

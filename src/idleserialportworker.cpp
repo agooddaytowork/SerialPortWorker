@@ -13,11 +13,7 @@ void idleSerialPortWorker::onEntry(QEvent *)
     anIf(SerialPortWorkerBasisDbgEn, anTrk("idleSerialPortWorker Entered"));
     basisptr->currentStateName = objectName();
     qApp->processEvents();
-    if (basisptr->previousStateName == QStringLiteral("uninitiatedSerialPortWorker"))
-    {
-        basisptr->queueNotificationReadyToWork();
-        emit basisptr->goToState2();
-    }
+    basisptr->idleSerialPortWorkerOnEntry();
 }
 
 void idleSerialPortWorker::onExit(QEvent *)

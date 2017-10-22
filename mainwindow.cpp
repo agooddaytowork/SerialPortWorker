@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
         emit killSerialPortThread();
         QThread *aNewThread = new QThread();
         SerialPortWorker *aSerialPortWorker = new SerialPortWorker();
-        aSerialPortWorker->setObjectName(UHV2WorkerObjName);
+        aSerialPortWorker->setObjectName(UHV2SerialPortWorkerObjName);
         aSerialPortWorker->moveToThread(aNewThread);
 
         QObject::connect(aNewThread, &QThread::started, aSerialPortWorker, &SerialPortWorker::start);
@@ -28,13 +28,13 @@ MainWindow::MainWindow(QWidget *parent) :
         if (ui->pushButton_UHVType->text() == QStringLiteral("UHV2"))
         {
             isUHV2 = false;
-            aSerialPortWorker->setObjectName(UHV4WorkerObjName);
+            aSerialPortWorker->setObjectName(UHV4SerialPortWorkerObjName);
             ui->pushButton_UHVType->setText(QStringLiteral("UHV4"));
         }
         else
         {
             isUHV2 = true;
-            aSerialPortWorker->setObjectName(UHV2WorkerObjName);
+            aSerialPortWorker->setObjectName(UHV2SerialPortWorkerObjName);
             ui->pushButton_UHVType->setText(QStringLiteral("UHV2"));
         }
         aNewThread->start();
@@ -76,7 +76,7 @@ void MainWindow::In(const GlobalSignal &aGlobalSignal)
             {
                 if (coreRepMsg.size() > 7)
                 {
-                    BinaryProtocol & tmpUHV2 = BinaryProtocol::fromQByteArray(coreRepMsg);
+                    BinaryProtocol tmpUHV2 = BinaryProtocol::fromQByteArray(coreRepMsg);
                     if (tmpUHV2.GetMessageDirection() == "From")
                     {
                         anInfo("Read: " << tmpUHV2.GetMessageTranslation());
@@ -110,7 +110,7 @@ void MainWindow::In(const GlobalSignal &aGlobalSignal)
             {
                 if (coreRepMsg.size() > 7)
                 {
-                    WindowProtocol & tmpUHV = WindowProtocol::fromQByteArray(coreRepMsg);
+                    WindowProtocol tmpUHV = WindowProtocol::fromQByteArray(coreRepMsg);
                     if (tmpUHV.getCOM()==0x30)//RD
                     {
                         if (tmpUHV.getDATA().size()==0)
@@ -148,7 +148,7 @@ void MainWindow::In(const GlobalSignal &aGlobalSignal)
                 }
                 else
                 {
-                    WindowProtocol & tmpUHV = WindowProtocol::fromQByteArray(coreRepMsg);
+                    WindowProtocol tmpUHV = WindowProtocol::fromQByteArray(coreRepMsg);
                     QString tmpMsgMean = tmpUHV.getMSGMean();
                     anInfo("Read: " << coreRepMsg.toHex());
                     updateSENDlabel("",ui->labelSentMsg->text(),ui->labelSentMessage->text());
@@ -229,7 +229,7 @@ void MainWindow::In(const GlobalSignal &aGlobalSignal)
             QByteArray coreRepMsg = aGlobalSignal.Data.toByteArray();
             if (isUHV2)
             {
-                BinaryProtocol & tmpUHV2 = BinaryProtocol::fromQByteArray(coreRepMsg);
+                BinaryProtocol tmpUHV2 = BinaryProtocol::fromQByteArray(coreRepMsg);
                 if (tmpUHV2.GetMessageDirection() == "To")
                 {
                     anInfo("Sent: " << tmpUHV2.GetMessageTranslation());
@@ -239,7 +239,7 @@ void MainWindow::In(const GlobalSignal &aGlobalSignal)
             }
             else
             {
-                WindowProtocol & tmpUHV = WindowProtocol::fromQByteArray(coreRepMsg);
+                WindowProtocol tmpUHV = WindowProtocol::fromQByteArray(coreRepMsg);
                 updateREADlabel("",ui->labelReadMsg->text(),ui->labelReadMessage->text());
                 updateSENDlabel("QLabel { background-color : green; color : yellow; }",tmpUHV.getMSG().toHex(),tmpUHV.getMSGMean());
             }

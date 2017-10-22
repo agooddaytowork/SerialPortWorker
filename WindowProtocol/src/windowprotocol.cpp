@@ -2,12 +2,10 @@
 
 WindowProtocol::WindowProtocol()
 {
-    anIf(WindowProtocolDbgEn, anTrk("Object Constructed"));
 }
 
 WindowProtocol::WindowProtocol(const quint8 WPNo)
 {
-    anIf(WindowProtocolDbgEn, anTrk("Object Constructed With WPNo="<<WPNo));
     setWPNo(WPNo);
 }
 
@@ -26,7 +24,7 @@ const QString WindowProtocol::getWINMean() const
     if (WIN)
         return WINCode2WINMean.value(WIN);
     else
-        return QStringLiteral("");
+        return QStringLiteral();
 }
 
 const QString WindowProtocol::getCOMMean() const
@@ -36,7 +34,7 @@ const QString WindowProtocol::getCOMMean() const
     else if (COM==WR)
         return QStringLiteral("WR");
     else
-        return QStringLiteral("");
+        return QStringLiteral();
 }
 
 const QString WindowProtocol::getDATAMean() const
@@ -47,15 +45,15 @@ const QString WindowProtocol::getDATAMean() const
     {
         QString tmpDataStr(DATA);
         if (tmpDataStr==QStringLiteral("\x06"))
-            tmpReturn="ACK";
+            tmpReturn=QStringLiteral("ACK");
         else if (tmpDataStr==QStringLiteral("\x15"))
-            tmpReturn="NACK";
+            tmpReturn=QStringLiteral("NACK");
         else if (tmpDataStr==QStringLiteral("\x32"))
-            tmpReturn="Unknown Window";
+            tmpReturn=QStringLiteral("Unknown Window");
         else if (tmpDataStr==QStringLiteral("\x33"))
-            tmpReturn="Data Type Error";
+            tmpReturn=QStringLiteral("Data Type Error");
         else if (tmpDataStr==QStringLiteral("\x35"))
-            tmpReturn="Win Disabled";
+            tmpReturn=QStringLiteral("Win Disabled");
         break;
     }
     case 11:
@@ -64,9 +62,9 @@ const QString WindowProtocol::getDATAMean() const
     case 14:
     {
         if (DATA==HVON)
-            tmpReturn="ON";
+            tmpReturn=QStringLiteral("ON");
         else if (DATA==HVOFF)
-            tmpReturn="OFF";
+            tmpReturn=QStringLiteral("OFF");
         break;
     }
     case 810:
@@ -354,39 +352,34 @@ const QByteArray &WindowProtocol::genMSG()
     CRC=QString(QByteArray().append(XORofAllBytesInQByteArr(MSG)).toHex()).toUpper().toLocal8Bit().toHex().toInt(NULL,16);
     MSG<<CRC;
     MSG.prepend(STX);
-    anIf(WindowProtocolDbgEn,
-         anAck("Protocol Generated !");
-         anInfo(MSG.toHex());
-         anInfo(getMSGMean());
-    );
     return MSG;
 }
 
-WindowProtocol &WindowProtocol::fromQByteArray(const QByteArray &aMsg)
+WindowProtocol WindowProtocol::fromQByteArray(const QByteArray &aMsg)
 {
-    WindowProtocol * tmpReturn = new WindowProtocol();
+    WindowProtocol tmpReturn;
     quint8 upPos=szSTX;
     quint8 downPos=aMsg.size();
-    tmpReturn->setADDR(aMsg.mid(upPos,szADDR).toHex().toInt(NULL,16));
+    tmpReturn.setADDR(aMsg.mid(upPos,szADDR).toHex().toInt(NULL,16));
     upPos+=szADDR;
-    tmpReturn->setCRC(aMsg.right(szCRC).toHex().toInt(NULL,16));
+    tmpReturn.setCRC(aMsg.right(szCRC).toHex().toInt(NULL,16));
     downPos-=(szETX+szCRC);
     quint8 tmpInt = downPos - upPos;
     quint16 tmpWINCode=aMsg.mid(upPos,szWIN).toInt();
     if ((tmpInt>=4) && (WINCode2WINMean.contains(tmpWINCode)))
     {
-        tmpReturn->setWIN(tmpWINCode);
+        tmpReturn.setWIN(tmpWINCode);
         upPos+=szWIN;
-        tmpReturn->setCOM(aMsg.mid(upPos,szCOM).toHex().toInt(NULL,16));
+        tmpReturn.setCOM(aMsg.mid(upPos,szCOM).toHex().toInt(NULL,16));
         upPos+=szCOM;
     }
     else
     {
-        tmpReturn->setWIN(0).setCOM(0);
+        tmpReturn.setWIN(0).setCOM(0);
     }
     tmpInt = downPos - upPos;
-    tmpReturn->setDATA(aMsg.mid(upPos,tmpInt)).genMSG();
-    return *tmpReturn;
+    tmpReturn.setDATA(aMsg.mid(upPos,tmpInt)).genMSG();
+    return tmpReturn;
 }
 
 WindowProtocol &WindowProtocol::setCMDFlag(const bool isACMD)
@@ -441,7 +434,7 @@ const QByteArray &WindowProtocol::getMSG() const
     return MSG;
 }
 
-const QHash<QString , quint16> &WindowProtocol::WINMean2WINCode = * new QHash<QString, quint16>
+const QHash<QString , quint16> WindowProtocol::WINMean2WINCode = QHash<QString, quint16>
 ({
      {"HVOnOffCh1", 11},
      {"HVOnOffCh2", 12},
@@ -499,7 +492,7 @@ const QHash<QString , quint16> &WindowProtocol::WINMean2WINCode = * new QHash<QS
      {"PMeasuredCh4", 842}
 });
 
-const QHash<quint16, QString > &WindowProtocol::WINCode2WINMean = SwapKeyValOnOneToOneQHash(WindowProtocol::WINMean2WINCode);
+const QHash<quint16, QString > WindowProtocol::WINCode2WINMean = SwapKeyValOnOneToOneQHash(WindowProtocol::WINMean2WINCode);
 
 const QByteArray WindowProtocol::HVON = QByteArray().append(0x31);
 const QByteArray WindowProtocol::HVOFF = QByteArray().append(0x30);

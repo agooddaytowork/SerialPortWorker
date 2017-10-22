@@ -3,7 +3,6 @@
 
 BinaryProtocol::BinaryProtocol()
 {
-    anIf(BinaryProtocolDbgEn, anTrk("Object Constructed"));
 }
 
 ///
@@ -22,10 +21,9 @@ BinaryProtocol::BinaryProtocol(const quint8 BPNum)
     ,mChkSum(0)
     ,mMsg()
 {
-    anIf(BinaryProtocolDbgEn, anTrk("Object Constructed With BPNo="<<BPNum));
 }
 
-BinaryProtocol &BinaryProtocol::fromQByteArray(const QByteArray &QBArr)
+BinaryProtocol BinaryProtocol::fromQByteArray(const QByteArray &QBArr)
 {
     TypHdr IntTmp1 = 0;
     TypHdr IntTmp2 = QBArr.left(_SzHdr).toHex().toInt(NULL,16);
@@ -33,25 +31,26 @@ BinaryProtocol &BinaryProtocol::fromQByteArray(const QByteArray &QBArr)
         IntTmp1 = IntTmp2 - _BaseHdrRsp;
     else
         IntTmp1 = IntTmp2 - _BaseHdrCmd;
-    BinaryProtocol * BPTmp = new BinaryProtocol(0);
-    BPTmp->SetBPNo(IntTmp1);
+    BinaryProtocol BPTmp(0);
+    BPTmp.SetBPNo(IntTmp1);
     IntTmp1 = 0;
-    BPTmp->mHdr = IntTmp2;
+    BPTmp.mHdr = IntTmp2;
     IntTmp1 += _SzHdr;
-    BPTmp->mDataLen = QBArr.mid(IntTmp1,_SzDatLen).toHex().toInt(NULL,16);
+    QByteArray tmpDataLen = QBArr.mid(IntTmp1,_SzDatLen);
+    BPTmp.mDataLen = tmpDataLen.toHex().toInt(NULL,16);
     IntTmp1 += _SzDatLen;
-    BPTmp->mCmd = QBArr.mid(IntTmp1,_SzCmd).toHex().toInt(NULL,16);
+    BPTmp.mCmd = QBArr.mid(IntTmp1,_SzCmd).toHex().toInt(NULL,16);
     IntTmp1 += _SzCmd;
-    BPTmp->mCh = QBArr.mid(IntTmp1,_SzCh).toHex().toInt(NULL,16);
+    BPTmp.mCh = QBArr.mid(IntTmp1,_SzCh).toHex().toInt(NULL,16);
     IntTmp1 += _SzCh;
-    IntTmp2 = QString::fromLocal8Bit(* new QByteArray() << BPTmp->mDataLen).toInt()-_SzCmd-_SzCh;
-    BPTmp->mData = QBArr.mid(IntTmp1,IntTmp2);
+    IntTmp2 = tmpDataLen.toInt(NULL,10)-_SzCmd-_SzCh;
+    BPTmp.mData = QBArr.mid(IntTmp1,IntTmp2);
     IntTmp1 += IntTmp2;
-    BPTmp->mChkSum = QBArr.mid(IntTmp1,_SzChkSum).toHex().toInt(NULL,16);
+    BPTmp.mChkSum = QBArr.mid(IntTmp1,_SzChkSum).toHex().toInt(NULL,16);
     //Vadility Of Response Message Should Be Added Here
-    BPTmp->mMsg.clear();
-    BPTmp->mMsg<<BPTmp->mHdr<<BPTmp->mDataLen<<BPTmp->mCmd<<BPTmp->mCh<<BPTmp->mData<<BPTmp->mChkSum;
-    return *BPTmp;
+    BPTmp.mMsg.clear();
+    BPTmp.mMsg<<BPTmp.mHdr<<BPTmp.mDataLen<<BPTmp.mCmd<<BPTmp.mCh<<BPTmp.mData<<BPTmp.mChkSum;
+    return BPTmp;
 }
 
 quint8 BinaryProtocol::GetBPNo() const
@@ -141,9 +140,9 @@ const QByteArray BinaryProtocol::GenMsg()
 const QString BinaryProtocol::GetMessageDirection() const
 {
     if (mHdr<_BaseHdrCmd)
-        return QString("From");
+        return QStringLiteral("From");
     else
-        return QString("To");
+        return QStringLiteral("To");
 }
 
 quint8 BinaryProtocol::GetHeader() const
@@ -153,7 +152,7 @@ quint8 BinaryProtocol::GetHeader() const
 
 quint8 BinaryProtocol::GetDataLength() const
 {
-    QByteArray QBTmp = "";
+    QByteArray QBTmp;
     QBTmp << mDataLen;
     return QBTmp.toInt();
 }
@@ -170,65 +169,65 @@ quint8 BinaryProtocol::GetChannel() const
 
 const QString BinaryProtocol::GetDataTranslation() const
 {
-    QString StrTmp = "";
+    QString StrTmp;
     switch (mCmd) {
     case 0x5A30:
         switch (mData.toHex().toInt(NULL,16)) {
         case 0x30:
-            StrTmp = "Local";
+            StrTmp = QStringLiteral("Local");
             break;
         case 0x31:
-            StrTmp = "Remote I/O";
+            StrTmp = QStringLiteral("Remote I/O");
             break;
         case 0x32:
-            StrTmp = "Serial";
+            StrTmp = QStringLiteral("Serial");
             break;
         }
         break;
     case 0x4130:
         switch (mData.toHex().toInt(NULL,16)) {
         case 0x30:
-            StrTmp = "Off";
+            StrTmp = QStringLiteral("Off");
             break;
         case 0x31:
-            StrTmp = "On With RunMode:Start/Step";
+            StrTmp = QStringLiteral("On With RunMode:Start/Step");
             break;
         case 0x32:
-            StrTmp = "On With RunMode:Start/Fixed";
+            StrTmp = QStringLiteral("On With RunMode:Start/Fixed");
             break;
         case 0x33:
-            StrTmp = "On With RunMode:Protect/Step";
+            StrTmp = QStringLiteral("On With RunMode:Protect/Step");
             break;
         case 0x34:
-            StrTmp = "On With RunMode:Protect/Fixed";
+            StrTmp = QStringLiteral("On With RunMode:Protect/Fixed");
             break;
         case 0x2D33:
-            StrTmp = "Off Due To Interlock Cable/Panel";
+            StrTmp = QStringLiteral("Off Due To Interlock Cable/Panel");
             break;
         case 0x2D34:
-            StrTmp = "Off Due To Remote I/O Interlock";
+            StrTmp = QStringLiteral("Off Due To Remote I/O Interlock");
             break;
         case 0x2D36:
-            StrTmp = "Off Due To HV Protect";
+            StrTmp = QStringLiteral("Off Due To HV Protect");
             break;
         case 0x2D37:
-            StrTmp = "Off Due To HV Short Circuit/ Remote I/O Failure";
+            StrTmp = QStringLiteral("Off Due To HV Short Circuit/ Remote I/O Failure");
             break;
         case 0x2D38:
-            StrTmp = "Off Due To HV Overtemperature";
+            StrTmp = QStringLiteral("Off Due To HV Overtemperature");
             break;
         }
         break;
     case 0x4430:
         switch (mData.toHex().toInt(NULL,16)) {
         case 0x30:
-            StrTmp = "Torr";
+            StrTmp = QStringLiteral("Torr");
             break;
         case 0x31:
-            StrTmp = "mBar";
+            StrTmp = QStringLiteral("mBar");
             break;
         case 0x32:
-            StrTmp = "Pascal";
+            StrTmp = QStringLiteral("Pascal");
             break;
         }
         break;
@@ -236,23 +235,23 @@ const QString BinaryProtocol::GetDataTranslation() const
         switch (mData.toHex().toInt(NULL,16)) {
         case 0x01:
         case 0x10:
-            StrTmp = "Reserved (always 0)";
+            StrTmp = QStringLiteral("Reserved (always 0)");
             break;
         case 0x02:
         case 0x20:
-            StrTmp = "Front Panel Interlock (equal to bit 20h)";
+            StrTmp = QStringLiteral("Front Panel Interlock (equal to bit 20h)");
             break;
         case 0x04:
-            StrTmp = "HV1 Remote I/O Interlock";
+            StrTmp = QStringLiteral("HV1 Remote I/O Interlock");
             break;
         case 0x08:
-            StrTmp = "HV1 Cable interlock";
+            StrTmp = QStringLiteral("HV1 Cable interlock");
             break;
         case 0x40:
-            StrTmp = "HV2 Remote I/O Interlock";
+            StrTmp = QStringLiteral("HV2 Remote I/O Interlock");
             break;
         case 0x80:
-            StrTmp = "HV2 Cable interlock";
+            StrTmp = QStringLiteral("HV2 Cable interlock");
             break;
         }
         break;
@@ -335,19 +334,19 @@ const QString BinaryProtocol::GetDataTranslation() const
         break;
     }
     if (mData.toHex().toInt(NULL,16) == 0x3F)
-        StrTmp = "To Be Collected !";
+        StrTmp = QStringLiteral("Requested");
     return StrTmp;
 }
 
 const QString BinaryProtocol::GetMessageTranslation() const
 {
-    QString StrTmp = "";
+    QString StrTmp;
     if (GetChannel() == 0)
-        StrTmp = "No Channel";
+        StrTmp = QStringLiteral("No Channel");
     else
         StrTmp = QString("Channel #").append(QString::number(GetChannel()));
-    StrTmp = GetMessageDirection() + " - Pump #" + QString::number(GetHeader())
-        + " - " + StrTmp + " - " + GetCommand() + " - Data " + GetDataTranslation();
+    StrTmp = GetMessageDirection() + QStringLiteral(" - Pump #") + QString::number(GetHeader())
+        + QStringLiteral(" - ") + StrTmp + QStringLiteral(" - ") + GetCommand() + QStringLiteral(" - Data ") + GetDataTranslation();
     return StrTmp;
 }
 
@@ -484,7 +483,7 @@ BinaryProtocol &BinaryProtocol::Data(const QByteArray &Data)
 
 BinaryProtocol &BinaryProtocol::Read()
 {
-    return this->Data(_Read);
+    return this->Data(_Read).HdrCmd();
 }
 
 BinaryProtocol &BinaryProtocol::On()
@@ -519,7 +518,7 @@ BinaryProtocol::TypDatLen BinaryProtocol::GetDataLen() const
 /// \brief UHV Command Set
 /// \abstract Fast Search For Code Indexed By Mean
 ///
-const QHash<QString , BinaryProtocol::TypCmd> &BinaryProtocol::CmdMean2CmdCode = * new QHash<QString, BinaryProtocol::TypCmd>
+const QHash<QString , BinaryProtocol::TypCmd> BinaryProtocol::CmdMean2CmdCode = QHash<QString, BinaryProtocol::TypCmd>
 ({
      {"ModeLRS", 0x5A30},
      {"HVSwitch", 0x4130},
@@ -542,4 +541,4 @@ const QHash<QString , BinaryProtocol::TypCmd> &BinaryProtocol::CmdMean2CmdCode =
 /// \brief UHV Command Set
 /// \abstract Fast Search For Mean Indexed By Code
 ///
-const QHash<BinaryProtocol::TypCmd, QString > &BinaryProtocol::CmdCode2CmdMean = SwapKeyValOnOneToOneQHash(BinaryProtocol::CmdMean2CmdCode);
+const QHash<BinaryProtocol::TypCmd, QString> BinaryProtocol::CmdCode2CmdMean = SwapKeyValOnOneToOneQHash(BinaryProtocol::CmdMean2CmdCode);

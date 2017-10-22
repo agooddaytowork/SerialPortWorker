@@ -1,7 +1,7 @@
 #ifndef BINARYPROTOCOL_H
 #define BINARYPROTOCOL_H
 
-#define BinaryProtocolDbgEn 1
+#define BinaryProtocolDbgEn 0
 
 #include <QDebug>
 #include <QtMath>
@@ -41,8 +41,8 @@ class BinaryProtocol
 
     //Command Set Indexed In Two Fields: Command Meaning & Command Code, Optimizing For Fast Performance
     //All Details About Commands Defined In Source File
-    static const QHash<QString, TypCmd> &CmdMean2CmdCode;
-    static const QHash<TypCmd, QString> &CmdCode2CmdMean;
+    static const QHash<QString, TypCmd> CmdMean2CmdCode;
+    static const QHash<TypCmd, QString> CmdCode2CmdMean;
 
     //Miscellany (Just A Bunch Of Other Constants)
     static constexpr const TypDatLen _StdDatLen = 0x3034;   //Standard Data Length, Here "04" => 0x3034
@@ -72,7 +72,7 @@ public:
     explicit BinaryProtocol();
     explicit BinaryProtocol(const quint8 BPNum);
 
-    static BinaryProtocol &fromQByteArray(const QByteArray &QBArr);
+    static BinaryProtocol fromQByteArray(const QByteArray &QBArr);
 
     quint8 GetBPNo() const;
     BinaryProtocol &SetBPNo(const quint8 BPNum);
