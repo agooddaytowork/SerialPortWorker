@@ -75,7 +75,7 @@ void SerialPortWorkerBasis::runningSerialPortWorkerOnEntry()
                 currentGlobalSignal.TimeStamp = NOW2String;
                 currentGlobalSignal.DstStrs.append(GlobalSignalCoordinatorObjName);
                 currentGlobalSignal.Priority = currentGlobalSignal.Priority + 1;
-                if (SerialPort.waitForBytesWritten(300))
+                if (SerialPort.waitForBytesWritten(1000))
                 {
                     anIf(SerialPortWorkerBasisDbgEn, anAck("Bytes Written !"));
                     currentGlobalSignal.Type = QVariant::fromValue(BytesWritten);
